@@ -4,7 +4,7 @@
 
 
     <application
-        android:label="XposedImGuiMenu"
+        android:label="XposedInjectDart"
 
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"

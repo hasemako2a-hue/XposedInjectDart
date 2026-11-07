@@ -33,6 +33,7 @@ public class Inject extends XposedModule {
         super.onPackageLoaded(param);
 
         String packageName = param.getPackageName();
+        Log.i(TAG,packageName);        
 
         // 対象アプリ以外は処理しない
         if (!TARGET_PACKAGE.equals(packageName)) {
@@ -44,26 +45,17 @@ public class Inject extends XposedModule {
         }
 
         injected = true;
-
+        Log.i(TAG,"start injection"); 
         try {
             String abi = Build.SUPPORTED_ABIS[0];
-
-            String resourceName =
-                    "lib/" + abi + "/libxposedmenu.so";
-
-            InputStream input =
-                    Inject.class.getClassLoader()
-                            .getResourceAsStream(resourceName);
+            String resourceName = "lib/" + abi + "/libxposedmenu.so";
+            InputStream input = Inject.class.getClassLoader().getResourceAsStream(resourceName);
 
             if (input == null) {
-                throw new Exception(
-                        "Native library not found: " + resourceName
-                );
+                throw new Exception("Native library not found: " + resourceName);
             }
-
-            ByteArrayOutputStream buffer =
-                    new ByteArrayOutputStream();
-
+            Log.i(TAG,"InputStream found"); 
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
             byte[] temp = new byte[8192];
             int count;
 
@@ -72,41 +64,29 @@ public class Inject extends XposedModule {
             }
 
             input.close();
-
-            File soFile = new File(
-                    "/data/user/0/" + packageName +
-                    "/cache/libxposedmenu.so"
-            );
-
+            Log.i(TAG,"finish InputStream"); 
+            File soFile = new File("/data/user/0/" + packageName + "/cache/libxposedmenu.so");
             File parent = soFile.getParentFile();
 
             if (parent != null && !parent.exists()) {
                 if (!parent.mkdirs() && !parent.exists()) {
-                    throw new Exception(
-                            "Cannot create cache directory"
-                    );
+                    throw new Exception("Cannot create cache directory");
                 }
             }
+            Log.i(TAG,"file exist"); 
 
-            try (FileOutputStream output =
-                         new FileOutputStream(soFile, false)) {
+            try (FileOutputStream output = new FileOutputStream(soFile, false)) {
                 buffer.writeTo(output);
                 output.flush();
             }
 
             // 絶対パスでネイティブライブラリをロード
             System.load(soFile.getAbsolutePath());
-
-            log(Log.INFO, TAG,
-                    "Loaded native library into " + packageName);
+            log(Log.INFO, TAG, "Loaded native library into " + packageName);
 
         } catch (Throwable t) {
-
             injected = false;
-
-            log(Log.ERROR, TAG,
-                    "Native injection failed: " + t);
-
+            log(Log.ERROR, TAG,"Native injection failed: " + t);
             log(Log.ERROR, TAG, Log.getStackTraceString(t));
         }
     }
