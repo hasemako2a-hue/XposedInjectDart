@@ -10,7 +10,7 @@ android {
     buildToolsVersion = "37.0.0"
 
     defaultConfig {
-        applicationId = "org.modfs.xposedmenu"
+        applicationId = "jp.mack.XposedInjectDart"
         // 互換性を考慮し、元の設定の minSdk 28 に合わせるか、あなたの 26 でも動作します（28を推奨）
         minSdk = 28
         targetSdk = 37

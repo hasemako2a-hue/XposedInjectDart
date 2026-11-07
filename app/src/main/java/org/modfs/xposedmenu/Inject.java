@@ -32,8 +32,7 @@ public class Inject extends XposedModule {
 
         super.onPackageLoaded(param);
 
-        String packageName = param.getPackageName();
-        Log.i(TAG,packageName);        
+        String packageName = param.getPackageName();               
 
         // 対象アプリ以外は処理しない
         if (!TARGET_PACKAGE.equals(packageName)) {
@@ -44,8 +43,7 @@ public class Inject extends XposedModule {
             return;
         }
 
-        injected = true;
-        Log.i(TAG,"start injection"); 
+        injected = true;        
         try {
             String abi = Build.SUPPORTED_ABIS[0];
             String resourceName = "lib/" + abi + "/libxposedmenu.so";
@@ -53,8 +51,7 @@ public class Inject extends XposedModule {
 
             if (input == null) {
                 throw new Exception("Native library not found: " + resourceName);
-            }
-            Log.i(TAG,"InputStream found"); 
+            }            
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
             byte[] temp = new byte[8192];
             int count;
@@ -63,8 +60,7 @@ public class Inject extends XposedModule {
                 buffer.write(temp, 0, count);
             }
 
-            input.close();
-            Log.i(TAG,"finish InputStream"); 
+            input.close();            
             File soFile = new File("/data/user/0/" + packageName + "/cache/libxposedmenu.so");
             File parent = soFile.getParentFile();
 
@@ -72,8 +68,7 @@ public class Inject extends XposedModule {
                 if (!parent.mkdirs() && !parent.exists()) {
                     throw new Exception("Cannot create cache directory");
                 }
-            }
-            Log.i(TAG,"file exist"); 
+            }            
 
             try (FileOutputStream output = new FileOutputStream(soFile, false)) {
                 buffer.writeTo(output);
