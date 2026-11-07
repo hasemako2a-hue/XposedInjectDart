@@ -19,7 +19,7 @@ android {
 
         // C++ビルド（NDK）の設定：必要なABIだけに絞る場合はここを編集
         ndk {
-            abiFilters.addAll(setOf("arm64-v8a", "x86_64", "armeabi-v7a", "x86"))
+            abiFilters.addAll(setOf("arm64-v8a"))
         }
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
