@@ -130,7 +130,7 @@ static void PatchThread() {
         sizeof(branch)
     );
 
-    if (result != kMemoryOperationErrorNone) {
+    if (result != kMemoryOperationSuccess) {
         LOGE("DobbyCodePatch failed: %d", static_cast<int>(result));
         return;
     }
