@@ -11,7 +11,7 @@
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, TAG, __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, TAG, __VA_ARGS__)
 
-static constexpr uintptr_t ORIGIN_OFFSET = 0x729cf0;
+static constexpr uintptr_t ORIGIN_OFFSET = 0x72686c;
 static constexpr uintptr_t TARGET_OFFSET = 0x724934;
 
 // ARM64 B imm26 を生成する
@@ -91,7 +91,7 @@ static uintptr_t FindLibappBase() {
 static void PatchThread() {
     uintptr_t base = 0;
 
-    for (int i = 0; i < 1500; i++) {
+    for (int i = 0; i < 500; i++) {
         base = FindLibappBase();
 
         if (base)

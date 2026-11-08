@@ -108,7 +108,7 @@ static bool PatchNop(uintptr_t address, uintptr_t offset) {
 static void PatchThread() {
     uintptr_t base = 0;
 
-    for (int i = 0; i < 1500; i++) {
+    for (int i = 0; i < 500; i++) {
         base = FindLibappBase();
 
         if (base)
