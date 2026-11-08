@@ -4,12 +4,12 @@ package org.modfs.xposedmenu;
 import android.os.Build;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import io.github.libxposed.api.XposedModule;
 import io.github.libxposed.api.XposedModuleInterface;
@@ -17,10 +17,52 @@ import io.github.libxposed.api.XposedModuleInterface;
 public class Inject extends XposedModule {
 
     private static final String TAG = "DartPatch";
-    private static final String TARGET_PACKAGE =
-            "jp.zaizen.wordpuzzle";
+    private static final Map<String, String> LIBRARIES = new HashMap<>();
 
-    private static boolean injected = false;
+    static {
+        LIBRARIES.put(
+            "jp.zaizen.colorplace",
+            "libcolorplace.so"
+        );
+
+        LIBRARIES.put(
+            "jp.zaizen.crossmath",
+            "libcrossmath.so"
+        );
+
+        LIBRARIES.put(
+            "jp.zaizen.klondike",
+            "libklondike.so"
+        );
+        LIBRARIES.put(
+            "jp.zaizen.left10",
+            "libleft10.so"
+        );
+
+        LIBRARIES.put(
+            "jp.zaizen.minesweeper",
+            "libminesweeper.so"
+        );
+
+        LIBRARIES.put(
+            "jp.zaizen.multiplication",
+            "libmultiplication.so"
+        );
+        LIBRARIES.put(
+            "jp.zaizen.numbersum",
+            "libnumbersum.so"
+        );
+
+        LIBRARIES.put(
+            "jp.zaizen.wordpuzzle",
+            "libwordpuzzle.so"
+        );
+
+        LIBRARIES.put(
+            "jp.zaizen.other",
+            "libotherapp.so"
+        );        
+    }
 
     public Inject() {
         super();
@@ -28,61 +70,67 @@ public class Inject extends XposedModule {
 
     @Override
     public void onPackageLoaded(
-            @NonNull PackageLoadedParam param) {
+            XposedModuleInterface.PackageLoadedParam param) {
 
-        super.onPackageLoaded(param);
+        String packageName = param.getPackageName();
 
-        String packageName = param.getPackageName();               
+        String libraryName = LIBRARIES.get(packageName);
 
-        // 対象アプリ以外は処理しない
-        if (!TARGET_PACKAGE.equals(packageName)) {
+        if (libraryName == null) {
             return;
         }
 
-        if (injected) {
-            return;
-        }
+        Log.i(TAG, "Target package: " + packageName);
+        Log.i(TAG, "Selected library: " + libraryName);
 
-        injected = true;        
+        loadNativeLibrary(packageName, libraryName);
+    }
+
+    private void loadNativeLibrary(
+            String packageName,
+            String libraryName) {
+
+        String abi = Build.SUPPORTED_ABIS[0];
+        String resourcePath = "lib/" + abi + "/" + libraryName;
+
         try {
-            String abi = Build.SUPPORTED_ABIS[0];
-            String resourceName = "lib/" + abi + "/libxposedmenu.so";
-            InputStream input = Inject.class.getClassLoader().getResourceAsStream(resourceName);
+            InputStream input = Inject.class.getClassLoader().getResourceAsStream(resourcePath);
 
             if (input == null) {
-                throw new Exception("Native library not found: " + resourceName);
-            }            
-            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-            byte[] temp = new byte[8192];
-            int count;
-
-            while ((count = input.read(temp)) != -1) {
-                buffer.write(temp, 0, count);
+                Log.e(TAG, "Library resource not found: " + resourcePath);
+                return;
             }
 
-            input.close();            
-            File soFile = new File("/data/user/0/" + packageName + "/cache/libxposedmenu.so");
-            File parent = soFile.getParentFile();
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-            if (parent != null && !parent.exists()) {
-                if (!parent.mkdirs() && !parent.exists()) {
-                    throw new Exception("Cannot create cache directory");
+            byte[] buffer = new byte[8192];
+            int length;
+
+            try (InputStream in = input) {
+                while ((length = in.read(buffer)) != -1) {
+                    output.write(buffer, 0, length);
                 }
-            }            
-
-            try (FileOutputStream output = new FileOutputStream(soFile, false)) {
-                buffer.writeTo(output);
-                output.flush();
             }
 
-            // 絶対パスでネイティブライブラリをロード
-            System.load(soFile.getAbsolutePath());
-            log(Log.INFO, TAG, "Loaded native library into " + packageName);
+            File cacheDir = new File("/data/user/0/" + packageName + "/cache");
 
-        } catch (Throwable t) {
-            injected = false;
-            log(Log.ERROR, TAG,"Native injection failed: " + t);
-            log(Log.ERROR, TAG, Log.getStackTraceString(t));
+            if (!cacheDir.exists() && !cacheDir.mkdirs()) {
+                Log.e(TAG, "Failed to create cache directory");
+                return;
+            }
+
+            File libraryFile = new File(cacheDir, libraryName);
+
+            try (FileOutputStream fos = new FileOutputStream(libraryFile)) {
+                fos.write(output.toByteArray());
+            }
+
+            System.load(libraryFile.getAbsolutePath());
+
+            Log.i(TAG, "Loaded " + libraryName + " into " + packageName);
+
+        } catch (Throwable e) {
+            Log.e(TAG, "Failed to load " + libraryName, e);
         }
     }
 }
