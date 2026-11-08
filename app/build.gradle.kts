@@ -5,7 +5,7 @@ plugins {
 
 android {
     // XposedImGuiMenu のパッケージ名を設定
-    namespace = "org.modfs.xposedmenu"
+    namespace = "jp.mack.xposedinjectdart"
     compileSdk = 37
     buildToolsVersion = "37.0.0"
 

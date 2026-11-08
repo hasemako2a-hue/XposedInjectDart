@@ -1,5 +1,5 @@
 
-package org.modfs.xposedmenu;
+package jp.mack.xposedinjectdart;
 
 import android.os.Build;
 import android.util.Log;
