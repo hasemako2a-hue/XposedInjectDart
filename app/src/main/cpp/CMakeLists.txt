@@ -11,52 +11,52 @@ find_library(log-lib log)
 find_library(android-lib android)
 
 
-add_library(wordpuzzle SHARED
+add_library(colorplace SHARED
     colorplace/main.cpp
     colorplace/DartPatch.cpp
 )
 
-add_library(examplegame SHARED
+add_library(crossmath SHARED
     crossmath/main.cpp
-    crossmath/GamePatch.cpp
+    crossmath/DartPatch.cpp
 )
 
-add_library(otherapp SHARED
+add_library(klondike SHARED
     klondike/main.cpp
-    klondike/OtherPatch.cpp
+    klondike/DartPatch.cpp
 )
 
-add_library(wordpuzzle SHARED
+add_library(left10 SHARED
     left10/main.cpp
     left10/DartPatch.cpp
 )
 
-add_library(examplegame SHARED
+add_library(minesweeper SHARED
     minesweeper/main.cpp
-    minesweeper/GamePatch.cpp
+    minesweeper/DartPatch.cpp
 )
 
-add_library(otherapp SHARED
+add_library(multiplication SHARED
     multiplication/main.cpp
-    multiplication/OtherPatch.cpp
+    multiplication/DartPatch.cpp
 )
-add_library(wordpuzzle SHARED
+add_library(numbersum SHARED
     numbersum/main.cpp
     numbersum/DartPatch.cpp
 )
 
-add_library(examplegame SHARED
+add_library(tilematch SHARED
     tilematch/main.cpp
-    tilematch/GamePatch.cpp
+    tilematch/DartPatch.cpp
 )
 
-add_library(otherapp SHARED
+add_library(wordpuzzle SHARED
     wordpuzzle/main.cpp
-    wordpuzzle/OtherPatch.cpp
+    wordpuzzle/DartPatch.cpp
 )
 
 # 共通設定
-foreach(target wordpuzzle examplegame otherapp)
+foreach(target colorplace crossmath klondike left10 minesweeper multiplication numbersum tilematch wordpuzzle)
 
     target_include_directories(${target} PRIVATE
         libraries/Dobby/include
