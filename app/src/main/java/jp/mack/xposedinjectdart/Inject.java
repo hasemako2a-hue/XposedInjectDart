@@ -31,6 +31,11 @@ public class Inject extends XposedModule {
         );
 
         LIBRARIES.put(
+            "jp.zaizen.jyanken",
+            "libjyanken.so"
+        );
+        
+        LIBRARIES.put(
             "jp.zaizen.klondike",
             "libklondike.so"
         );
@@ -54,14 +59,15 @@ public class Inject extends XposedModule {
         );
 
         LIBRARIES.put(
+            "jp.zaizen.tilematch",
+            "libtilematch.so"
+        );    
+        
+        LIBRARIES.put(
             "jp.zaizen.wordpuzzle",
             "libwordpuzzle.so"
         );
-
-        LIBRARIES.put(
-            "jp.zaizen.other",
-            "libotherapp.so"
-        );        
+    
     }
 
     public Inject() {

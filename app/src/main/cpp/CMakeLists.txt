@@ -12,47 +12,52 @@ find_library(android-lib android)
 
 
 add_library(colorplace SHARED
-    colorplace/main.cpp
-    colorplace/DartPatch.cpp
+    games/colorplace/main.cpp
+    games/colorplace/DartPatch.cpp
 )
 
 add_library(crossmath SHARED
-    crossmath/main.cpp
-    crossmath/DartPatch.cpp
+    games/crossmath/main.cpp
+    games/crossmath/DartPatch.cpp
+)
+
+add_library(jyanken SHARED
+    games/jyanken/main.cpp
+    games/jyanken/DartPatch.cpp
 )
 
 add_library(klondike SHARED
-    klondike/main.cpp
-    klondike/DartPatch.cpp
+    games/klondike/main.cpp
+    games/klondike/DartPatch.cpp
 )
 
 add_library(left10 SHARED
-    left10/main.cpp
-    left10/DartPatch.cpp
+    games/left10/main.cpp
+    games/left10/DartPatch.cpp
 )
 
 add_library(minesweeper SHARED
-    minesweeper/main.cpp
-    minesweeper/DartPatch.cpp
+    games/minesweeper/main.cpp
+    games/minesweeper/DartPatch.cpp
 )
 
 add_library(multiplication SHARED
-    multiplication/main.cpp
-    multiplication/DartPatch.cpp
+    games/multiplication/main.cpp
+    games/multiplication/DartPatch.cpp
 )
 add_library(numbersum SHARED
-    numbersum/main.cpp
-    numbersum/DartPatch.cpp
+    games/numbersum/main.cpp
+    games/numbersum/DartPatch.cpp
 )
 
 add_library(tilematch SHARED
-    tilematch/main.cpp
-    tilematch/DartPatch.cpp
+    games/tilematch/main.cpp
+    games/tilematch/DartPatch.cpp
 )
 
 add_library(wordpuzzle SHARED
-    wordpuzzle/main.cpp
-    wordpuzzle/DartPatch.cpp
+    games/wordpuzzle/main.cpp
+    games/wordpuzzle/DartPatch.cpp
 )
 
 # 共通設定

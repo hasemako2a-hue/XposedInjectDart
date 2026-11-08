@@ -1,7 +1,7 @@
 #include <jni.h>
 #include <android/log.h>
 
-#define TAG "left10"
+#define TAG "DartPatch"
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, TAG, __VA_ARGS__)
 
 extern "C" void StartDartPatchThread();
