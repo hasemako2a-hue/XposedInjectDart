@@ -61,7 +61,7 @@ add_library(wordpuzzle SHARED
 )
 
 # 共通設定
-foreach(target colorplace crossmath klondike left10 minesweeper multiplication numbersum tilematch wordpuzzle)
+foreach(target colorplace crossmath klondike left10 minesweeper multiplication numbersum tilematch wordpuzzle jyanken)
 
     target_include_directories(${target} PRIVATE
         libraries/Dobby/include
