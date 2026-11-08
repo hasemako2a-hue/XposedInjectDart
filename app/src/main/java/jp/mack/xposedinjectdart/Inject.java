@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,79 +18,25 @@ import io.github.libxposed.api.XposedModuleInterface;
 public class Inject extends XposedModule {
 
     private static final String TAG = "DartPatch";
-    private static final Map<String, String> LIBRARIES = new HashMap<>();
-
-    static {
-        LIBRARIES.put(
-            "jp.zaizen.colorplace",
-            "libcolorplace.so"
-        );
-
-        LIBRARIES.put(
-            "jp.zaizen.crossmath",
-            "libcrossmath.so"
-        );
-
-        LIBRARIES.put(
-            "jp.zaizen.jyanken",
-            "libjyanken.so"
-        );
-        
-        LIBRARIES.put(
-            "jp.zaizen.klondike",
-            "libklondike.so"
-        );
-        LIBRARIES.put(
-            "jp.zaizen.left10",
-            "libleft10.so"
-        );
-
-        LIBRARIES.put(
-            "jp.zaizen.minesweeper",
-            "libminesweeper.so"
-        );
-
-        LIBRARIES.put(
-            "jp.zaizen.multiplication",
-            "libmultiplication.so"
-        );
-        LIBRARIES.put(
-            "jp.zaizen.numbersum",
-            "libnumbersum.so"
-        );
-
-        LIBRARIES.put(
-            "jp.zaizen.tilematch",
-            "libtilematch.so"
-        );    
-        
-        LIBRARIES.put(
-            "jp.zaizen.wordpuzzle",
-            "libwordpuzzle.so"
-        );
-    
-    }
+    private static final String[] apps = {"colorplace", "crossmath", "jyanken", "klondike", "left10", "minesweeper", "multiplication", "numbersum", "tilematch", ".wordpuzzle"};
 
     public Inject() {
         super();
     }
 
     @Override
-    public void onPackageLoaded(
-            XposedModuleInterface.PackageLoadedParam param) {
+    public void onPackageLoaded(XposedModuleInterface.PackageLoadedParam param) {
 
         String packageName = param.getPackageName();
-
-        String libraryName = LIBRARIES.get(packageName);
-
-        if (libraryName == null) {
-            return;
+        if (packageName.startsWith("jp.zaizen")) {
+            String appName = packageName.substring(10);
+            if (Arrays.asList(apps).contains(appName)) {
+                Log.i(TAG, "Target package: " + packageName);
+                loadNativeLibrary(packageName, String.format("lib%s.so", appName));
+            }
         }
 
-        Log.i(TAG, "Target package: " + packageName);
-        Log.i(TAG, "Selected library: " + libraryName);
-
-        loadNativeLibrary(packageName, libraryName);
+        
     }
 
     private void loadNativeLibrary(
