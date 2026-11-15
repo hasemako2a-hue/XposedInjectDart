@@ -1,4 +1,4 @@
-#include "../../common/PatchCommon.h"
+#include "../common/PatchCommon.h"
 
 namespace {
 constexpr char kModuleName[] = "libapp.so";
@@ -6,7 +6,7 @@ constexpr bool kCheckExpectedInstruction = false;
 constexpr uint32_t kExpectedInstruction = 0x00000000;
     
 constexpr char kLogTag[] = "BranchPatch";    
-constexpr uintptr_t kPatchParams[][] = {
+constexpr uintptr_t kPatchParams[][2] = {
     {0x8e4400, 0x729684}
 };
 
@@ -17,7 +17,7 @@ void* PatchThread(void*) {
         return nullptr;
     }
 
-    constexpr size_t count = sizeof(kPatchParams) ;
+    constexpr size_t count = sizeof(kPatchParams)/ sizeof(kPatchParams[0]) ;
     for (size_t i = 0; i < count; ++i) {
         PatchCommon::ApplyBranch(
             base,

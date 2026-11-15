@@ -11,7 +11,7 @@ find_library(log-lib log)
 find_library(android-lib android)
 
 # 共通設定
-foreach(target colorplace crossmath klondike left10 minesweeper multiplication numbersum tilematch wordpuzzle jyanken slider)
+foreach(target jyanken colorplace crossmath klondike left10 minesweeper multiplication numbersum tilematch wordpuzzle slider)
 
     add_library(${target} SHARED
         common/JniOnLoad.cpp

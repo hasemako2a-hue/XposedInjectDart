@@ -1,4 +1,4 @@
-#include "../../common/PatchCommon.h"
+#include "../common/PatchCommon.h"
 
 namespace {
 constexpr char kModuleName[] = "libapp.so";
@@ -19,7 +19,7 @@ void* PatchThread(void*) {
         return nullptr;
     }
 
-    constexpr size_t count = sizeof(kPatchParams) ;
+    constexpr size_t count = sizeof(kPatchParams)/ sizeof(kPatchParams[0]) ;
     for (size_t i = 0; i < count; ++i) {
         PatchCommon::ApplyNop(
             base,
