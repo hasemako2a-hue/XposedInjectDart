@@ -11,14 +11,16 @@ find_library(log-lib log)
 find_library(android-lib android)
 
 # 共通設定
-foreach(target colorplace crossmath klondike left10 minesweeper multiplication numbersum tilematch wordpuzzle jyanken)
+foreach(target colorplace crossmath klondike left10 minesweeper multiplication numbersum tilematch wordpuzzle jyanken slider)
 
     add_library(${target} SHARED
-        games/${target}/main.cpp
-        games/${target}/DartPatch.cpp
+        common/JniOnLoad.cpp
+        common/PatchCommon.cpp
+        games/${target}.cpp
     )    
 
     target_include_directories(${target} PRIVATE
+        common
         libraries/Dobby/include
     )
 
