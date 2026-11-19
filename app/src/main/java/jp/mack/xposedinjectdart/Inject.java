@@ -19,7 +19,7 @@ import io.github.libxposed.api.XposedModuleInterface;
 public class Inject extends XposedModule {
 
     private static final String TAG = "DartPatch";
-    private static final String[] apps = {"colorplace", "crossmath", "jyanken", "klondike", "left10", "minesweeper", "multiplication", "numbersum", "tilematch", "wordpuzzle", "slider"};
+    private static final String[] apps = {"colorplace", "crossmath", "jyanken", "klondike", "left10", "minesweeper", "multiplication", "numbersum", "tilematch", "wordpuzzle", "slider","pentan"};
     
     private SharedPreferences.OnSharedPreferenceChangeListener coordinateListener;
     private static native void nativeSetCoordinates(float x, float y);

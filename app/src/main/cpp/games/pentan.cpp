@@ -1,4 +1,4 @@
-#include "../../common/PatchCommon.h"
+#include "../common/PatchCommon.h"
 
 #include <dobby.h>
 #include <android/log.h>
@@ -17,28 +17,26 @@ constexpr uintptr_t kHookOffset = 0x555988;
 std::atomic<float> g_x{-20.0f};
 std::atomic<float> g_y{250.0f};
 
-void OnVec2Hook(RegisterContext* ctx, const HookEntryInfo*) {
+void OnVec2Hook(void* address, DobbyRegisterContext* ctx) {
 #if defined(__aarch64__)
 
     // Frida: this.context.x2
-    const uintptr_t x2 = static_cast<uintptr_t>(ctx->general.regs.x2);
+    const uintptr_t x2 =
+        static_cast<uintptr_t>(ctx->general.regs.x2);
 
-    // Frida: this.context.x2.sub(1)
     const uintptr_t vec2Ptr = x2 - 1;
 
-    // Frida: this.context.x2.and(ptr("0xffffffff00000000"))
     const uintptr_t heapBase =
         x2 & 0xffffffff00000000ULL;
 
-    // Frida: vec2Ptr.add(0x08).readU32()
     uint32_t compressedStorage = 0;
+
     std::memcpy(
         &compressedStorage,
         reinterpret_cast<const void*>(vec2Ptr + 0x08),
         sizeof(compressedStorage)
     );
 
-    // Frida: heapBase.or(compressedStorage).sub(1)
     const uintptr_t storagePtr =
         (heapBase | static_cast<uintptr_t>(compressedStorage)) - 1;
 
@@ -48,17 +46,8 @@ void OnVec2Hook(RegisterContext* ctx, const HookEntryInfo*) {
     const float x = g_x.load(std::memory_order_relaxed);
     const float y = g_y.load(std::memory_order_relaxed);
 
-    std::memcpy(
-        reinterpret_cast<void*>(xAddr),
-        &x,
-        sizeof(x)
-    );
-
-    std::memcpy(
-        reinterpret_cast<void*>(yAddr),
-        &y,
-        sizeof(y)
-    );
+    std::memcpy(reinterpret_cast<void*>(xAddr), &x, sizeof(x));
+    std::memcpy(reinterpret_cast<void*>(yAddr), &y, sizeof(y));
 
 #endif
 }
