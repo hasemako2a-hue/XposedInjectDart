@@ -1,6 +1,7 @@
 
 package jp.mack.xposedinjectdart;
 
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 
@@ -19,7 +20,10 @@ public class Inject extends XposedModule {
 
     private static final String TAG = "DartPatch";
     private static final String[] apps = {"colorplace", "crossmath", "jyanken", "klondike", "left10", "minesweeper", "multiplication", "numbersum", "tilematch", "wordpuzzle", "slider"};
-
+    
+    private SharedPreferences.OnSharedPreferenceChangeListener coordinateListener;
+    private static native void nativeSetCoordinates(float x, float y);
+    
     public Inject() {
         super();
     }
@@ -81,9 +85,47 @@ public class Inject extends XposedModule {
             System.load(libraryFile.getAbsolutePath());
 
             Log.i(TAG, "Loaded " + libraryName + " into " + packageName);
+            if ("jp.zaizen.pentan".equals(packageName)) {
+                setupCoordinatePreferences();
+            }
 
         } catch (Throwable e) {
             Log.e(TAG, "Failed to load " + libraryName, e);
         }
+    }
+    
+    private void setupCoordinatePreferences() {
+        try {
+            SharedPreferences prefs = getRemotePreferences("pentan");
+
+            // 初期値を反映
+            applyCoordinates(prefs);
+
+            // 設定変更を検知してネイティブ側にも反映
+            coordinateListener = (sharedPreferences, key) -> {
+                if (key == null
+                        || "coordinate_x".equals(key)
+                        || "coordinate_y".equals(key)) {
+
+                    applyCoordinates(sharedPreferences);
+                }
+            };
+
+            prefs.registerOnSharedPreferenceChangeListener(
+                    coordinateListener
+            );
+
+        } catch (Throwable e) {
+            Log.e(TAG, "Failed to load coordinate preferences", e);
+        }
+    }
+
+    private void applyCoordinates(SharedPreferences prefs) {
+        float x = prefs.getFloat("coordinate_x", -20.0f);
+        float y = prefs.getFloat("coordinate_y", 250.0f);
+
+        nativeSetCoordinates(x, y);
+
+        Log.i(TAG, "Coordinates updated: x=" + x + ", y=" + y);
     }
 }
