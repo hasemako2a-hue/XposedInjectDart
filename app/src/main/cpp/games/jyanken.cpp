@@ -5,7 +5,7 @@ constexpr char kModuleName[] = "libapp.so";
 constexpr bool kCheckExpectedInstruction = false;
 constexpr uint32_t kExpectedInstruction = 0x00000000;
     
-constexpr char kLogTag[] = "NopPatch";    
+constexpr char kLogTag[] = "jyanken";    
 constexpr uintptr_t kPatchParams[] = {
     0x8bd330,
     0x8bd380,
