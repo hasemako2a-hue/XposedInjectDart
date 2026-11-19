@@ -7,9 +7,9 @@ constexpr uint32_t kExpectedInstruction = 0x00000000;
     
 constexpr char kLogTag[] = "BranchPatch";    
 constexpr uintptr_t kPatchParams[][2] = {
-    {0x8afdf8, 0x8c5784},
-    {0x8ca3a8, 0x8c5784},
-    {0x8c5b34, 0x8c591c}
+    {0x8b0588,0x8c5f14},
+    {0x8cab74,0x8c5f14},
+    {0x8c6300,0x8c60e8}
 };
 
 void* PatchThread(void*) {
