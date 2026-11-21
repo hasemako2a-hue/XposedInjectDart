@@ -11,7 +11,10 @@ namespace {
 
 constexpr char kModuleName[] = "libapp.so";
 constexpr char kLogTag[] = "Vec2Hook";
-constexpr uintptr_t kHookOffset = 0x555988;
+constexpr uintptr_t kPatchParams[] = {
+    0x555988,
+    0x54ece0
+};
 
 // Java側から更新する座標
 std::atomic<float> g_x{-20.0f};
@@ -58,17 +61,24 @@ void* PatchThread(void*) {
             kModuleName, &base, kLogTag)) {
         return nullptr;
     }
-    void* target = reinterpret_cast<void*>(base + kHookOffset);
+    
+    void* target;
+    int result;
+    constexpr size_t count = sizeof(kPatchParams)/ sizeof(kPatchParams[0]) ;
+    for (size_t i = 0; i < count; ++i) {
+        target = reinterpret_cast<void*>(base + kPatchParams[i]);
+        result = DobbyInstrument(target, OnVec2Hook);
+        __android_log_print(
+            ANDROID_LOG_INFO,
+            kLogTag,
+            "DobbyInstrument: target=%p result=%d",
+            target,
+            result
+        );
+    }    
 
-    const int result = DobbyInstrument(target, OnVec2Hook);
 
-    __android_log_print(
-        ANDROID_LOG_INFO,
-        kLogTag,
-        "DobbyInstrument: target=%p result=%d",
-        target,
-        result
-    );
+
 
     return nullptr;
 }
