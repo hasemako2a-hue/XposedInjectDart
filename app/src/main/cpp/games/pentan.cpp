@@ -10,7 +10,7 @@
 namespace {
 
 constexpr char kModuleName[] = "libapp.so";
-constexpr char kLogTag[] = "Vec2Hook";
+constexpr char kLogTag[] = "pentan";
 constexpr uintptr_t kPatchParams[] = {
     0x555988,
     0x54ece0
@@ -62,24 +62,18 @@ void* PatchThread(void*) {
         return nullptr;
     }
     
-    void* target;
-    int result;
     constexpr size_t count = sizeof(kPatchParams)/ sizeof(kPatchParams[0]) ;
     for (size_t i = 0; i < count; ++i) {
-        target = reinterpret_cast<void*>(base + kPatchParams[i]);
-        result = DobbyInstrument(target, OnVec2Hook);
+        void* target = reinterpret_cast<void*>(base + kPatchParams[i]);
+        int result = DobbyInstrument(target, OnVec2Hook);
         __android_log_print(
             ANDROID_LOG_INFO,
             kLogTag,
-            "DobbyInstrument: target=%p result=%d",
+            "DartPatch: pentan target=%p result=%d",
             target,
             result
         );
     }    
-
-
-
-
     return nullptr;
 }
 } // namespace
